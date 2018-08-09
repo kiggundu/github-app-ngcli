@@ -7,6 +7,7 @@ import { SearchResultsComponent } from '../search-results/search-results.compone
   imports: [
     CommonModule
   ],
-  declarations: [SearchBarComponent, SearchResultsComponent]
+  declarations: [SearchBarComponent, SearchResultsComponent],
+  exports: [SearchBarComponent, SearchResultsComponent]
 })
 export class SearchModule { }
