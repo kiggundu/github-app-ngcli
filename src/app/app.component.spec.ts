@@ -1,3 +1,4 @@
+import { SearchModule } from './search/search.module';
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 describe('AppComponent', () => {
@@ -6,6 +7,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      imports: [SearchModule]
     }).compileComponents();
   }));
   it('should create the app', async(() => {
@@ -13,15 +15,15 @@ describe('AppComponent', () => {
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
-  it(`should have as title 'github-app-ngcli'`, async(() => {
+  it(`should have a non-empty title`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('github-app-ngcli');
+    expect(app.title).toBeTruthy();
   }));
   it('should render title in a h1 tag', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to github-app-ngcli!');
+    expect(compiled.querySelector('h1').textContent).toBeTruthy();
   }));
 });
