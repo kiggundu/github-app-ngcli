@@ -1,3 +1,5 @@
+import { HttpModule } from '@angular/http';
+import { HttpClientModule,  } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -7,13 +9,15 @@ import { SearchModule } from './search/search.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
-    SearchModule
+    SearchModule,
+    HttpModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [ ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

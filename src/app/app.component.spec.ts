@@ -1,14 +1,11 @@
 import { SearchModule } from './search/search.module';
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { configureTestBed } from './utilities/spec-tools';
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-      imports: [SearchModule]
-    }).compileComponents();
+    configureTestBed([SearchModule]).compileComponents();
   }));
   it('should create the app', async(() => {
     const fixture = TestBed.createComponent(AppComponent);

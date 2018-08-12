@@ -1,3 +1,4 @@
+import { configureTestBed } from './../utilities/spec-tools';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchBarComponent } from './search-bar.component';
@@ -7,10 +8,7 @@ describe('SearchBarComponent', () => {
   let fixture: ComponentFixture<SearchBarComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SearchBarComponent ]
-    })
-    .compileComponents();
+    configureTestBed([]).compileComponents();
   }));
 
   beforeEach(() => {
