@@ -27,16 +27,48 @@ describe('GithubAdapterService', () => {
 
   it('should return valid query results', (done: DoneFn) => {
     const testQuery = 'test';
-    searchServiceSut.search(testQuery).subscribe((users: User[]) => {
-      expect(users).toEqual(mockSearchResponse.items); // check that the mock users are returned
-      done();
-    });
+    searchServiceSut
+      .search(testQuery)
+      .subscribe(
+        (users: User[]) => {
+          expect(users).toEqual(mockSearchResponse.items); // check that the mock users are returned
+          done();
+        },
+        (error: any) => {
+          fail('Did not expect an error');
+          done();
+        }
+      );
 
     const successfulRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
       return req.url.indexOf(`q=${testQuery}`) > 0;
     });
     successfulRequest.flush({ body: JSON.stringify(mockSearchResponse) });
     expect(successfulRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
+
+    httpMock.verify();
+  });
+
+  it('should handle serverside errors', (done: DoneFn) => {
+    const testQuery = 'test';
+    searchServiceSut
+      .search(testQuery)
+      .subscribe(
+        (users: User[]) => {
+          fail('Expected a subscription error');
+          done();
+        },
+        (error: any) => {
+          expect(error.status).toBe(500);
+          done();
+        }
+      );
+
+    const failedRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
+      return req.url.indexOf(`q=${testQuery}`) > 0;
+    });
+    failedRequest.error(new ErrorEvent('internal error'), {headers: {}, status: 500, statusText: 'Server side failure'});
+    expect(failedRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
 
     httpMock.verify();
   });
