@@ -1,61 +1,43 @@
-import { HttpModule } from '@angular/http';
-import { HttpClientModule, HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { TestBed, getTestBed } from '@angular/core/testing';
-import { GithubAdapterService, User } from './github-adapter.service';
+import { HttpRequest } from '@angular/common/http';
+import { HttpTestingController } from '@angular/common/http/testing';
+import { getTestBed } from '@angular/core/testing';
 import { configureTestBed } from '../utilities/spec-tools';
+import { GithubAdapterService, User } from './github-adapter.service';
+import { mockSearchResponse } from './spec.fixtures';
+
 
 describe('GithubAdapterService', () => {
 
-  const mockUsersResponse = {
-    items: [
-      {
-        login: 'fredtest',
-        avatar_url: 'http://example.com'
-      },
-      {
-        login: 'bentest',
-        avatar_url: 'http://example.com'
-      }
-    ]
-  };
+  let testBed;
+  let searchServiceSut: GithubAdapterService;
+  let httpMock: HttpTestingController;
 
 
   beforeEach(() => {
     configureTestBed([]);
 
+    testBed = getTestBed();
+    searchServiceSut = testBed.get(GithubAdapterService);
+    httpMock = testBed.get(HttpTestingController);
   });
 
   it('should be created', () => {
-    const testBed = getTestBed();
-    const service = testBed.get(GithubAdapterService);
-    expect(service).toBeTruthy();
+    expect(searchServiceSut).toBeTruthy();
   });
 
   it('should return valid query results', (done: DoneFn) => {
-    console.log('Testing.......');
     const testQuery = 'test';
-    const testBed = getTestBed();
-    const fixture: GithubAdapterService = testBed.get(GithubAdapterService);
-
-    const httpMock: HttpTestingController = testBed.get(HttpTestingController);
-
-    console.log(fixture.endpoint);
-    fixture.search(testQuery).subscribe((users: User[]) => {
-      expect(users).toEqual(mockUsersResponse.items); // check that the mock users are returned
+    searchServiceSut.search(testQuery).subscribe((users: User[]) => {
+      expect(users).toEqual(mockSearchResponse.items); // check that the mock users are returned
       done();
     });
 
     const successfulRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
-      return req.url.startsWith(fixture.endpoint);
+      return req.url.indexOf(`q=${testQuery}`) > 0;
     });
-    successfulRequest.flush({ body: JSON.stringify(mockUsersResponse) });
-    console.log((successfulRequest.request.params));
-    expect(successfulRequest.request.urlWithParams).toEqual(`${fixture.endpoint}?q=${testQuery}`);
-
-
+    successfulRequest.flush({ body: JSON.stringify(mockSearchResponse) });
+    expect(successfulRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
 
     httpMock.verify();
-
   });
 });

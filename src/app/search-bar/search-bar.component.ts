@@ -1,4 +1,4 @@
-import { GithubAdapterService } from './../services/github-adapter.service';
+import { GithubAdapterService } from '../services/github-adapter.service';
 import { Component, OnInit, Inject } from '@angular/core';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { debounce, debounceTime, map, filter } from 'rxjs/operators';

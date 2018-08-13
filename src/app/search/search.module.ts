@@ -1,4 +1,4 @@
-import { GithubAdapterService } from './../services/github-adapter.service';
+import { GithubAdapterService } from '../services/github-adapter.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from '../search-bar/search-bar.component';

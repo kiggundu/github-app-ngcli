@@ -24,9 +24,7 @@ export class GithubAdapterService {
     // TODO: make this configurable per environment such that tests run agains a test backend
     return this.http.get<UsersResponse>(`${this.endpoint}?q=${query}`)
       .pipe(
-        tap((resp) => console.log(`----->Response: ${JSON.stringify(resp['body'])}`)),
         map((response: UsersResponse) => JSON.parse(response['body']).items),
-        tap((users) => console.log(`----->Found ${users.length} users`))
       );
   }
 }
