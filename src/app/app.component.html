@@ -4,13 +4,10 @@
     {{ title }}!
   </h1>
 </div>
-<h2>App to search and display github handles </h2>
-<ul>
-  <li>
-    <app-search-bar (searchResults)="updateSearchResults($event)"></app-search-bar>
-  </li>
-  <li>
+<div [ngClass]="['container']">
+  <app-search-bar (searchResults)="updateSearchResults($event)"></app-search-bar>
+</div>
+<div [ngClass]="['container']">
     <app-search-results [users]="foundUsers"></app-search-results>
-  </li>
-</ul>
+</div>
 

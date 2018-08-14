@@ -1,6 +1,6 @@
-<div>
-  <span *ngFor="let user of users">
-    <h2>{{user.login}}</h2>
-    <img [attr.src]="user.avatar_url" [ngClass]="['img-rounded']"/>
-</span>
+<div >
+  <div *ngFor="let user of users" [ngClass]="['thumbnail']">
+    <img [attr.src]="user.avatar_url" [ngClass]="['rounded-circle', 'img-fluid', 'img-thumbnail']"/>
+    <p ng-class="small">{{user.login}}</p>
+</div>
 </div>
