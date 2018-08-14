@@ -1,23 +1,56 @@
+import { async, ComponentFixture, getTestBed, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import * as sinon from 'sinon';
+import { GithubAdapterService, User } from '../services/github-adapter.service';
 import { configureTestBed } from '../utilities/spec-tools';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { mockSearchResponse } from './../services/spec.fixtures';
 import { SearchBarComponent } from './search-bar.component';
+import { By } from '@angular/platform-browser';
+
 
 describe('SearchBarComponent', () => {
-  let component: SearchBarComponent;
-  let fixture: ComponentFixture<SearchBarComponent>;
+  let testBed: TestBed;
+  let theComponent: SearchBarComponent;
+  let theComponentFixture: ComponentFixture<SearchBarComponent>;
+  let theSearchService: GithubAdapterService;
 
   beforeEach(async(() => {
-    configureTestBed([]).compileComponents();
+    configureTestBed(
+      [],
+      [GithubAdapterService]
+    ).compileComponents();
+    testBed = getTestBed();
+    theSearchService = testBed.get(GithubAdapterService);
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SearchBarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    theComponentFixture = testBed.createComponent(SearchBarComponent);
+    theComponent = theComponentFixture.componentInstance;
+    theComponentFixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(theComponent).toBeTruthy();
+  });
+
+  it('should properly invoke search service', (done) => {
+    const searchStub = sinon.stub(theSearchService, 'search');
+    searchStub.returns(of([mockSearchResponse.items]));
+
+    theComponent.ngOnInit();
+    theComponent.searchResults
+      .subscribe(
+        (users: User[]) => {
+          expect(users).toBe(mockSearchResponse.items);
+          console.log('hi');
+          done();
+        }
+      );
+    theComponent.queryText = 'fred';
+
+    const txtElement = theComponentFixture.debugElement.query(By.css('input'));
+    txtElement.nativeElement.text = 'fred';
+    theComponentFixture.detectChanges();
+
   });
 });
