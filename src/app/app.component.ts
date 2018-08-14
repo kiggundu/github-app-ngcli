@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
   entryComponents: [SearchBarComponent, SearchResultsComponent]
 })
 export class AppComponent {
-  title = 'Github Handel Search';
+  title = 'Github Handle Search';
   foundUsers: User[] = [];
 
   updateSearchResults(users: User[]) {
