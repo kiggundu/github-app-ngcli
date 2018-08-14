@@ -1,6 +1,6 @@
 import { HttpRequest } from '@angular/common/http';
 import { HttpTestingController } from '@angular/common/http/testing';
-import { getTestBed } from '@angular/core/testing';
+import { getTestBed, async } from '@angular/core/testing';
 import { configureTestBed } from '../utilities/spec-tools';
 import { GithubAdapterService, User } from './github-adapter.service';
 import { mockSearchResponse } from './spec.fixtures';
@@ -49,18 +49,20 @@ describe('GithubAdapterService', () => {
     httpMock.verify();
   });
 
-  it('should handle serverside errors', (done: DoneFn) => {
+  it('should handle serverside errors', async(() => {
     const testQuery = 'test';
     searchServiceSut
       .search(testQuery)
       .subscribe(
         (users: User[]) => {
           fail('Expected a subscription error');
-          done();
+          console.log('1111111');
+          // done();
         },
         (error: any) => {
           expect(error.status).toBe(500);
-          done();
+          console.log('2222222');
+          // done();
         }
       );
 
@@ -71,5 +73,5 @@ describe('GithubAdapterService', () => {
     expect(failedRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
 
     httpMock.verify();
-  });
+  }));
 });

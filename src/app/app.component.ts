@@ -1,3 +1,4 @@
+import { User } from './services/github-adapter.service';
 import { SearchResultsComponent } from './search-results/search-results.component';
 import { SearchModule } from './search/search.module';
 import { SearchBarComponent } from './search-bar/search-bar.component';
@@ -11,4 +12,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Github Search Application';
+  foundUsers: User[] = [];
+
+  updateSearchResults(users: User[]) {
+    this.foundUsers = users;
+  }
 }

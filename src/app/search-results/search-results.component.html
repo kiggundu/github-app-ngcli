@@ -1,3 +1,6 @@
-<p>
-  search-results works!
-</p>
+<div>
+  <span *ngFor="let user of users">
+    <h2>{{user.login}}</h2>
+    <img [attr.src]="user.avatar_url" [ngClass]="['img-rounded']"/>
+</span>
+</div>

@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 
+// TODO: move these to model classes
 export interface UsersResponse {
   items: User[];
 }
@@ -24,7 +25,10 @@ export class GithubAdapterService {
     // TODO: make this configurable per environment such that tests run agains a test backend
     return this.http.get<UsersResponse>(`${this.endpoint}?q=${query}`)
       .pipe(
-        map((response: UsersResponse) => JSON.parse(response['body']).items),
+        // tap((resp) => console.log(`Got ${JSON.stringify(resp)} from the server`)),
+        map((response: UsersResponse): User[] => response.items),
+        // tap((resp) => console.log(`Got ${JSON.stringify(resp)} after processing`)),
+
       );
   }
 }

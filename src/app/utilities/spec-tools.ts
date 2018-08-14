@@ -5,12 +5,13 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-export const configureTestBed  = function(imports: any[]) {
+export const configureTestBed  = function(imports: any[] = [], providers: any[] = []) {
   return TestBed.configureTestingModule({
     declarations: [
       AppComponent
     ],
-    imports: [...imports, HttpModule, HttpClientModule, HttpClientTestingModule, SearchModule]
+    imports: [...imports, HttpModule, HttpClientModule, HttpClientTestingModule, SearchModule],
+    providers: [...providers]
   });
 
 };
