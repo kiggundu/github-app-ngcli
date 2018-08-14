@@ -1,7 +1,7 @@
-import { GithubAdapterService } from '../services/github-adapter.service';
-import { Component, OnInit, Inject } from '@angular/core';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { debounce, debounceTime, map, filter } from 'rxjs/operators';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime, filter, map, tap } from 'rxjs/operators';
+import { GithubAdapterService, User } from '../services/github-adapter.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -11,19 +11,33 @@ import { debounce, debounceTime, map, filter } from 'rxjs/operators';
 export class SearchBarComponent implements OnInit {
 
   private searchQuery: BehaviorSubject<string> = new BehaviorSubject<string>('');
-  private searchResults: BehaviorSubject<any> = new BehaviorSubject<string>(null);
+   queryText: string;
+  @Output() public searchResults = new EventEmitter<User[]>();
 
-  constructor(private searchService: GithubAdapterService) { }
-
-  ngOnInit() {
-    this.searchQuery.pipe(
-      filter((query: String) => query.length > 3),
-      debounceTime(1000),
-      map( (queryStr: string) => this.searchService.search(queryStr).subscribe(this.searchResults)),
-    );
+  constructor(private searchService: GithubAdapterService) {
+    this.queryText = '';
   }
 
-  private processKeyPressed(event) {
+  ngOnInit() {
+    this.searchQuery
+      .pipe(
+        filter((query: string) => query.length > 3),
+        debounceTime(300),
+        map((queryStr: string) => this.searchService
+          .search(queryStr)
+          .subscribe(
+            (users: User[]) => {
+              this.searchResults.emit(users);
+            }),
+          (error: any) => {
+            console.log(`Error: ${error}`);
+          }
+        ),
+      )
+      .subscribe();
+  }
+
+  private searchTextChanged(event: any) {
     this.searchQuery.next(event.target.value);
   }
 
