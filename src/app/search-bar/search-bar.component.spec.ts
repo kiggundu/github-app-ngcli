@@ -35,21 +35,20 @@ describe('SearchBarComponent', () => {
 
   it('should properly invoke search service', (done) => {
     const searchStub = sinon.stub(theSearchService, 'search');
-    searchStub.returns(of([mockSearchResponse.items]));
+    searchStub.returns(of(mockSearchResponse.items));
 
     theComponent.ngOnInit();
     theComponent.searchResults
       .subscribe(
         (users: User[]) => {
           expect(users).toBe(mockSearchResponse.items);
-          console.log('hi');
           done();
         }
       );
-    theComponent.queryText = 'fred';
 
     const txtElement = theComponentFixture.debugElement.query(By.css('input'));
-    txtElement.nativeElement.text = 'fred';
+    txtElement.nativeElement.value = 'test';
+    txtElement.nativeElement.dispatchEvent(new Event('keyup'));
     theComponentFixture.detectChanges();
 
   });

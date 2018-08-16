@@ -11,7 +11,6 @@ import { GithubAdapterService, User } from '../services/github-adapter.service';
 export class SearchBarComponent implements OnInit {
 
   private searchQuery: BehaviorSubject<string> = new BehaviorSubject<string>('');
-  // private queryInput: any;
   @Output() public searchResults = new EventEmitter<User[]>();
 
   constructor(private searchService: GithubAdapterService) {
@@ -37,8 +36,6 @@ export class SearchBarComponent implements OnInit {
   }
 
   private searchTextChanged(value: string) {
-    console.log(value);
-    // console.log(` querytext===>"${this.queryText}"`);
     this.searchQuery.next(value);
   }
 
