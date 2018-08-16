@@ -11,11 +11,10 @@ import { GithubAdapterService, User } from '../services/github-adapter.service';
 export class SearchBarComponent implements OnInit {
 
   private searchQuery: BehaviorSubject<string> = new BehaviorSubject<string>('');
-   queryText: string;
+  // private queryInput: any;
   @Output() public searchResults = new EventEmitter<User[]>();
 
   constructor(private searchService: GithubAdapterService) {
-    this.queryText = '';
   }
 
   ngOnInit() {
@@ -33,12 +32,14 @@ export class SearchBarComponent implements OnInit {
             console.log(`Error: ${error}`);
           }
         ),
-      )
+    )
       .subscribe();
   }
 
-  private searchTextChanged(event: any) {
-    this.searchQuery.next(event.target.value);
+  private searchTextChanged(value: string) {
+    console.log(value);
+    // console.log(` querytext===>"${this.queryText}"`);
+    this.searchQuery.next(value);
   }
 
 }

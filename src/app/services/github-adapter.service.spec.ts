@@ -25,7 +25,7 @@ describe('GithubAdapterService', () => {
     expect(searchServiceSut).toBeTruthy();
   });
 
-  fit('should return valid query results', (done: DoneFn) => {
+  it('should return valid query results', (done: DoneFn) => {
     const testQuery = 'test';
     searchServiceSut
       .search(testQuery)
