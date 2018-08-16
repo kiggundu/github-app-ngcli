@@ -25,17 +25,18 @@ describe('GithubAdapterService', () => {
     expect(searchServiceSut).toBeTruthy();
   });
 
-  it('should return valid query results', (done: DoneFn) => {
+  fit('should return valid query results', (done: DoneFn) => {
     const testQuery = 'test';
     searchServiceSut
       .search(testQuery)
       .subscribe(
         (users: User[]) => {
+          console.log(`users: ${users}`);
           expect(users).toEqual(mockSearchResponse.items); // check that the mock users are returned
           done();
         },
         (error: any) => {
-          fail('Did not expect an error');
+          fail(`Did not expect an error ${error}`);
           done();
         }
       );
@@ -43,7 +44,7 @@ describe('GithubAdapterService', () => {
     const successfulRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
       return req.url.indexOf(`q=${testQuery}`) > 0;
     });
-    successfulRequest.flush({ body: JSON.stringify(mockSearchResponse) });
+    successfulRequest.flush(mockSearchResponse);
     expect(successfulRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
 
     httpMock.verify();
