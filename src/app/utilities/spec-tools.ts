@@ -10,7 +10,7 @@ export const configureTestBed  = function(imports: any[] = [], providers: any[] 
     declarations: [
       AppComponent
     ],
-    imports: [...imports, HttpModule, HttpClientModule, HttpClientTestingModule, SearchModule],
+    imports: [...imports, HttpClientModule, HttpClientTestingModule, ],
     providers: [...providers]
   });
 
