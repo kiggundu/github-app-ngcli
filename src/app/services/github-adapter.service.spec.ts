@@ -1,4 +1,5 @@
-import { HttpRequest, HttpClient } from '@angular/common/http';
+import { Http } from '@angular/http';
+import { HttpRequest, HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, async, inject } from '@angular/core/testing';
 import { configureTestBed } from '../utilities/spec-tools';
@@ -9,23 +10,20 @@ import { SearchModule } from '../search/search.module';
 
 describe('GithubAdapterService', () => {
 
-  let testBed;
-  let searchServiceSut: GithubAdapterService;
-
-
   beforeEach(() => {
     configureTestBed([SearchModule]);
-
-    testBed = getTestBed();
-    searchServiceSut = testBed.get(GithubAdapterService);
   });
 
-  it('should be created', () => {
+  afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    httpMock.verify();
+  }));
+
+  it('should be created', inject([GithubAdapterService], (searchServiceSut: GithubAdapterService) => {
     expect(searchServiceSut).toBeTruthy();
-  });
+  }));
 
   it('should return valid query results', async(
-    inject([HttpClient, HttpTestingController], (http: HttpClient, httpMock: HttpTestingController) => {
+    inject([HttpTestingController, GithubAdapterService], (httpMock: HttpTestingController, searchServiceSut: GithubAdapterService) => {
       const testQuery = 'test';
       searchServiceSut
         .search(testQuery)
@@ -44,13 +42,11 @@ describe('GithubAdapterService', () => {
       });
       successfulRequest.flush(mockSearchResponse);
       expect(successfulRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
-
-      httpMock.verify();
     })
   ));
 
   it('should handle serverside errors', async(
-    inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    inject([HttpTestingController, GithubAdapterService], (httpMock: HttpTestingController, searchServiceSut: GithubAdapterService) => {
       const testQuery = 'test';
       searchServiceSut
         .search(testQuery)
@@ -68,8 +64,6 @@ describe('GithubAdapterService', () => {
       });
       failedRequest.error(new ErrorEvent('internal error'), { headers: {}, status: 500, statusText: 'Server side failure' });
       expect(failedRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
-
-      httpMock.verify();
     })
   ));
 });
