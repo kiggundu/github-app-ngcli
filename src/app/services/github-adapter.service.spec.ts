@@ -1,4 +1,3 @@
-import { Http } from '@angular/http';
 import { HttpRequest, HttpClient, HttpClientModule, , HttpEvent, HttpEventType } from '@angular/common/http';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, async, inject } from '@angular/core/testing';
@@ -38,7 +37,7 @@ describe('GithubAdapterService', () => {
         );
 
       const successfulRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
-        return req.url.indexOf(`q=${testQuery}`) > 0;
+        return req.params.get('q') === testQuery;
       });
       successfulRequest.flush(mockSearchResponse);
       expect(successfulRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
@@ -60,7 +59,7 @@ describe('GithubAdapterService', () => {
         );
 
       const failedRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
-        return req.url.indexOf(`q=${testQuery}`) > 0;
+        return req.params.get('q') === testQuery;
       });
       failedRequest.error(new ErrorEvent('internal error'), { headers: {}, status: 500, statusText: 'Server side failure' });
       expect(failedRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
