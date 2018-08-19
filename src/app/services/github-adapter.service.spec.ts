@@ -1,5 +1,5 @@
 import { Http } from '@angular/http';
-import { HttpRequest, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpRequest, HttpClient, HttpClientModule, , HttpEvent, HttpEventType } from '@angular/common/http';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, async, inject } from '@angular/core/testing';
 import { configureTestBed } from '../utilities/spec-tools';
@@ -52,10 +52,10 @@ describe('GithubAdapterService', () => {
         .search(testQuery)
         .subscribe(
           (users: User[]) => {
-            fail('Expected a subscription error');
+            expect(users).toEqual([]); // check that the mock users are returned
           },
           (error: any) => {
-            expect(error.status).toBe(500);
+            fail('Errors should not be passed on to service client');
           }
         );
 
