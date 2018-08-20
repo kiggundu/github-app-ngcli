@@ -1,10 +1,10 @@
-import { HttpRequest, HttpClient, HttpClientModule, , HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpRequest } from '@angular/common/http';
 import { HttpTestingController } from '@angular/common/http/testing';
-import { getTestBed, async, inject } from '@angular/core/testing';
+import { async, inject } from '@angular/core/testing';
+import { SearchModule } from '../search/search.module';
 import { configureTestBed } from '../utilities/spec-tools';
 import { GithubAdapterService, User } from './github-adapter.service';
 import { mockSearchResponse } from './spec.fixtures';
-import { SearchModule } from '../search/search.module';
 
 
 describe('GithubAdapterService', () => {
@@ -44,7 +44,28 @@ describe('GithubAdapterService', () => {
     })
   ));
 
-  it('should handle serverside errors', async(
+  it('should handle clientside network errors', async(
+    inject([HttpTestingController, GithubAdapterService], (httpMock: HttpTestingController, searchServiceSut: GithubAdapterService) => {
+      const testQuery = 'test';
+      searchServiceSut
+        .search(testQuery)
+        .subscribe(
+          (users: User[]) => {
+            expect(users).toEqual([]); // check that the mock users are returned
+          },
+          (error: any) => {
+            fail('Errors should not be passed on to service client');
+          }
+        );
+
+      const failedRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
+        return req.params.get('q') === testQuery;
+      });
+      failedRequest.error(new ErrorEvent('internal error', { message: 'No internet connection available' }));
+    })
+  ));
+
+  it('should handle serverside network errors', async(
     inject([HttpTestingController, GithubAdapterService], (httpMock: HttpTestingController, searchServiceSut: GithubAdapterService) => {
       const testQuery = 'test';
       searchServiceSut
@@ -62,7 +83,6 @@ describe('GithubAdapterService', () => {
         return req.params.get('q') === testQuery;
       });
       failedRequest.flush('internal error', { headers: {}, status: 501, statusText: 'Server side failure' });
-      expect(failedRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
     })
   ));
 });
