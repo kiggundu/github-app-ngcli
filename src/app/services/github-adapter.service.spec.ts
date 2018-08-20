@@ -61,7 +61,7 @@ describe('GithubAdapterService', () => {
       const failedRequest = httpMock.expectOne((req: HttpRequest<any>): boolean => {
         return req.params.get('q') === testQuery;
       });
-      failedRequest.error(new ErrorEvent('internal error'), { headers: {}, status: 500, statusText: 'Server side failure' });
+      failedRequest.flush('internal error', { headers: {}, status: 501, statusText: 'Server side failure' });
       expect(failedRequest.request.urlWithParams).toEqual(`${searchServiceSut.endpoint}?q=${testQuery}`);
     })
   ));
