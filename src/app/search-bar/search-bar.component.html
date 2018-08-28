@@ -1,7 +1,8 @@
-
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="basic-addon1">Search</span>
-    </div>
-    <input #queryInput (keyup)="searchTextChanged(queryInput.value)" type="text" class="form-control" placeholder="Username" aria-label="Search" aria-describedby="basic-addon1">
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">Search</span>
   </div>
+  <input #queryInput (keyup)="searchTextChanged(queryInput.value)" type="text" class="form-control" placeholder="Username"
+    aria-label="Search" aria-describedby="basic-addon1">
+</div>
+<ngb-alert *ngIf="!!alert" [type]="alert['type']" [dismissible]="true"> {{alert['message']}}</ngb-alert>

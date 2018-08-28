@@ -11,9 +11,11 @@ import { GithubAdapterService, User } from '../services/github-adapter.service';
 export class SearchBarComponent implements OnInit {
 
   private searchQuery: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  protected alert: {message: string, type: 'danger'|'warning'} | boolean  = false;
   @Output() public searchResults = new EventEmitter<User[]>();
 
   constructor(private searchService: GithubAdapterService) {
+    this.alert = { message: 'Just testing', type: 'danger' };
   }
 
   ngOnInit() {
