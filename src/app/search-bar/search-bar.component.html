@@ -5,4 +5,4 @@
   <input #queryInput (keyup)="searchTextChanged(queryInput.value)" type="text" class="form-control" placeholder="Username"
     aria-label="Search" aria-describedby="basic-addon1">
 </div>
-<ngb-alert *ngIf="!!alert" [type]="alert['type']" [dismissible]="true"> {{alert['message']}}</ngb-alert>
+<ngb-alert *ngIf="!!alert" (close)="alert=false" [type]="alert['type']" [dismissible]="true"> {{alert['message']}}</ngb-alert>

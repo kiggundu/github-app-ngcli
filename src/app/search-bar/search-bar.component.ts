@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { debounceTime, filter, map, tap } from 'rxjs/operators';
-import { GithubAdapterService, User } from '../services/github-adapter.service';
+import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
+import { GithubAdapterService, User, UsersResponse } from '../services/github-adapter.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -11,33 +11,47 @@ import { GithubAdapterService, User } from '../services/github-adapter.service';
 export class SearchBarComponent implements OnInit {
 
   private searchQuery: BehaviorSubject<string> = new BehaviorSubject<string>('');
-  protected alert: {message: string, type: 'danger'|'warning'} | boolean  = false;
+  protected alert: { message: string, type: 'danger' | 'warning' | 'info' } | boolean;
   @Output() public searchResults = new EventEmitter<User[]>();
 
   constructor(private searchService: GithubAdapterService) {
-    this.alert = { message: 'Just testing', type: 'danger' };
+    this.alert = false;
   }
 
   ngOnInit() {
     this.searchQuery
       .pipe(
+        tap((query: string) => { console.log(`The Query: ${query}`); }),
         filter((query: string) => query.length > 3),
         debounceTime(300),
-        map((queryStr: string) => this.searchService
-          .search(queryStr)
-          .subscribe(
-            (users: User[]) => {
-              this.searchResults.emit(users);
-            }),
-          (error: any) => {
-            console.log(`Error: ${error}`);
+        switchMap((queryStr: string) => {
+          this.alert = { message: 'Searching...', type: 'info' };
+          return this.searchService.search(queryStr);
+        }),
+      )
+      .subscribe(
+        (response: UsersResponse) => {
+          if (!response.error) {
+            this.searchResults.emit(response.users);
+            this.alert = false;
+          } else {
+            this.searchResults.emit(response.users);
+            this.alert = { message: response.error, type: 'warning' };
           }
-        ),
-    )
-      .subscribe();
+        },
+        (error) => {
+          this.searchResults.emit([]);
+          this.alert = { message: error, type: 'danger' };
+        },
+        () => {
+          console.log('Observable prematurely complete!');
+          this.alert = { message: 'No more queries allowed. See logs for details', type: 'warning' };
+        }
+      );
   }
 
   private searchTextChanged(value: string) {
+    this.alert = false;
     this.searchQuery.next(value);
   }
 

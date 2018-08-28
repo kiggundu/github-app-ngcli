@@ -5,7 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 
 // TODO: move these to model classes
 export interface UsersResponse {
-  items: User[];
+  error?: string;
+  users?: User[];
 }
 export interface User {
   login: string;
@@ -21,18 +22,18 @@ export class GithubAdapterService {
 
   constructor(private http: HttpClient) { }
 
-  search(query: string): Observable<User[]> {
+  search(query: string): Observable<UsersResponse> {
     const options = query ? {params : new HttpParams().set('q', query)} : {};
     // TODO: make this configurable per environment such that tests run agains a test backend
-    return this.http.get<UsersResponse>(`${this.endpoint}`, options)
+    return this.http.get(`${this.endpoint}`, options)
       .pipe(
         // tap((resp) => console.log(`Got ${JSON.stringify(resp)} from the server`)),
-        map((response: UsersResponse): User[] => response.items),
+        map((response): UsersResponse => ({users: response['items']})),
         // tap((resp) => console.log(`Got ${JSON.stringify(resp)} after processing`)),
         catchError(error => {
           // TODO: post error off to Airbrake or Sentry
           console.log(`Error: Failed to get github data; ${JSON.stringify(error)}`);
-          return of([]);
+          return of({error: 'Failed to query server. See logs for details.'});
         }),
 
       );
