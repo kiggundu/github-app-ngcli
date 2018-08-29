@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "clean": "rm -rf dist",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "npm run clean && ng build",
     "test": "ng test",
     "testDebug": "ng test --browsers ChromeDebug",
     "lint": "ng lint",
