@@ -11,7 +11,7 @@ import { GithubAdapterService, User, UsersResponse } from '../services/github-ad
 export class SearchBarComponent implements OnInit {
 
   private searchQuery: BehaviorSubject<string> = new BehaviorSubject<string>('');
-  protected alert: { message: string, type: 'danger' | 'warning' | 'info' } | boolean;
+  public alert: { message: string, type: 'danger' | 'warning' | 'info' } | boolean;
   @Output() public searchResults = new EventEmitter<User[]>();
 
   constructor(private searchService: GithubAdapterService) {
@@ -50,7 +50,7 @@ export class SearchBarComponent implements OnInit {
       );
   }
 
-  private searchTextChanged(value: string) {
+  public searchTextChanged(value: string) {
     this.alert = false;
     this.searchQuery.next(value);
   }
